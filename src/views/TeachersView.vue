@@ -2,14 +2,15 @@
     <div v-if="getSelectedLessonsList.length" class="list-container">
         <div v-for="lesson in getSelectedLessonsList" :key="lesson.id" class="item-container">
             {{ lesson.subject }}
-            <select v-model="selectedTeacherVal" @change = "onChange(lesson.id)">
+            <select v-model="selectedTeacherVal" @change="onChange(lesson.id)">
                 <option default>Select teacher</option>
                 <option v-for="teacher in teachersList" :key="teacher.id" :value="teacher.id">
                     {{ teacher.name }}
                 </option>
-            </select>            
+            </select>
         </div>
-        <button type="button" @click="onBtnActiob">Розпочати навчання</button>        
+        <div v-for="(item, index) in informMessage" :key="index" class="result-container">{{item}}</div>
+        <button type="button" @click="onBtnAction">Розпочати навчання</button>
     </div>
     <div v-else>No results</div>
 </template>
@@ -21,31 +22,36 @@ export default {
         return {
             selectedTeacherVal: null,
             selectedTeachersLessonsArr: [],
+            informMessage: [],
         }
     },
 
     computed: {
-        ...mapGetters('teachers', ['teachersList']),
+        ...mapGetters('teachers', ['teachersList', 'getTeacherById']),
         ...mapGetters('lessons', ['getLessonById']),
         getSelectedLessonsList() {
             return this.$route.params.id.map((id) => this.getLessonById(id))
         },
     },
-    methods: {       
-        onChange(lessonId){
-          // this.selectedTeachersLessonsArr.push({lesson: lessonId, teacher: this.selectedTeacherVal})
-          this.selectedTeachersLessonsArr.push(`${lessonId}-${this.selectedTeacherVal}`)
-          this.selectedTeacherVal = null
-
-          console.log(this.selectedTeachersLessonsArr)
+    methods: {
+        onChange(lessonId) {
+            // this.selectedTeachersLessonsArr.push({lesson: lessonId, teacher: this.selectedTeacherVal})
+            this.selectedTeachersLessonsArr.push(`${lessonId}-${this.selectedTeacherVal}`)
+            const teacherName = this.getTeacherById(this.selectedTeacherVal).name
+            const lessonTitle = this.getLessonById(lessonId).subject
+            this.informMessage.push(`${teacherName} - to lesson ${lessonTitle}`)
+            console.log('message', this.informMessage)
+            this.selectedTeacherVal = null
+            console.log(this.selectedTeachersLessonsArr)
         },
-         onBtnActiob() {
-           this.$router.push({
-            name: 'selected-teachers-lessons',
-            params:{
-              id:this.selectedTeachersLessonsArr
-            }
-           })
+
+        onBtnAction() {
+            this.$router.push({
+                name: 'selected-teachers-lessons',
+                params: {
+                    id: this.selectedTeachersLessonsArr,
+                },
+            })
         },
     },
 }
@@ -68,6 +74,14 @@ export default {
 
     & > button {
         margin-top: 20px;
+    }
+
+    & .result-container{
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: green;
     }
 }
 </style>
