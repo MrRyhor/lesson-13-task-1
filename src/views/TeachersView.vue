@@ -1,8 +1,8 @@
 <template>
     <div v-if="getSelectedLessonsList.length" class="list-container">
-        <div v-for="lesson in getSelectedLessonsList" :key="lesson.id" class="item-container">
+        <div v-for="(lesson, i) in getSelectedLessonsList" :key="lesson.id" class="item-container">
             {{ lesson.subject }}
-            <select v-model="selectedTeacherVal" @change="onChange(lesson.id)">
+            <select v-model="selectedTeacherVal" ref="select" @change="onChange(lesson.id, i)">
                 <option default>Select teacher</option>
                 <option v-for="teacher in teachersList" :key="teacher.id" :value="teacher.id">
                     {{ teacher.name }}
@@ -34,13 +34,13 @@ export default {
         },
     },
     methods: {
-        onChange(lessonId) {
+        onChange(lessonId, index) {
             // this.selectedTeachersLessonsArr.push({lesson: lessonId, teacher: this.selectedTeacherVal})
             this.selectedTeachersLessonsArr.push(`${lessonId}-${this.selectedTeacherVal}`)
+            this.$refs.select[index].disabled = true
             const teacherName = this.getTeacherById(this.selectedTeacherVal).name
             const lessonTitle = this.getLessonById(lessonId).subject
             this.informMessage.push(`${teacherName} - to lesson ${lessonTitle}`)
-            console.log('message', this.informMessage)
             this.selectedTeacherVal = null
             console.log(this.selectedTeachersLessonsArr)
         },
