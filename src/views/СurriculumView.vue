@@ -3,8 +3,7 @@
         <div v-for="item in getСurriculumList" :key="item.id" class="item-container">
             <div>{{ item.subject }}</div>
             <div>---</div>
-            <div>{{ item.teacher }}</div>
-            <!-- {{ item.subject }} --- {{ item.teacher }} -->
+            <div>{{ item.teacher }}</div>            
         </div>
     </div>
 </template>

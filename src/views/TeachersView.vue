@@ -35,6 +35,7 @@ export default {
         onChange(lessonId){
           // this.selectedTeachersLessonsArr.push({lesson: lessonId, teacher: this.selectedTeacherVal})
           this.selectedTeachersLessonsArr.push(`${lessonId}-${this.selectedTeacherVal}`)
+          this.selectedTeacherVal = null
 
           console.log(this.selectedTeachersLessonsArr)
         },
